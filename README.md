@@ -1,6 +1,6 @@
 # TicketSales
 
-Concret tickets sale solution
+Concert tickets sale solution
 
 Roles:
   - User can buy tickets for various concerts
