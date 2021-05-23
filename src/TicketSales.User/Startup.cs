@@ -44,7 +44,7 @@ namespace TicketSales.User
 
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
-                    var host = cfg.Host("localhost", "tickets", h => { h.Username("guest"); h.Password("guest"); });
+                    var host = cfg.Host("localhost", "milos", h => { h.Username("guest"); h.Password("guest"); });
 
                     cfg.ReceiveEndpoint(host, "user", e =>
                     {
