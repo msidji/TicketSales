@@ -48,7 +48,7 @@ namespace TicketSales.Admin
 
                         e.ConfigureConsumer<TestEventHandler>(provider);
 
-                        EndpointConvention.Map<TestCommand>(new Uri("rabbitmq://localhost/tickets/core"));
+                        EndpointConvention.Map<TestCommand>(new Uri("rabbitmq://localhost/milos/core"));
                     });
 
                     // or, configure the endpoints by convention
