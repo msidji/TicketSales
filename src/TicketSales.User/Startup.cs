@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
+using AutoMapper;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using TicketSales.Messages.Commands;
+using TicketSales.Messages.Common;
 using TicketSales.User.Consumers;
+using TicketSales.User.Mappings;
 using TicketSales.User.Services;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace TicketSales.User
 {
@@ -28,6 +28,12 @@ namespace TicketSales.User
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Get Environment Configurations
+            var rabbitMqHost = Configuration["RabbitMq:Host"];
+            var rabbitMqVirtualHost = Configuration["RabbitMq:VirtualHost"];
+            var rabbitMqHostUsername = Configuration["RabbitMq:HostUsername"];
+            var rabbitMqHostPassword = Configuration["RabbitMq:HostPassword"];
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -35,36 +41,58 @@ namespace TicketSales.User
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
+            // Add Data Stores
             services.AddSingleton<TestMessageStore>();
+            services.AddSingleton<ConcertMessageStore>();
 
+            // Add MessageBroker Services
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<TestEventHandler>();
+                x.AddConsumer<ConcertCreatedConsumer>();
+                x.AddConsumer<TicketsBoughtForConcertConsumer>();
 
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
-                    var host = cfg.Host("localhost", "milos", h => { h.Username("guest"); h.Password("guest"); });
+                    var host = cfg.Host(rabbitMqHost, rabbitMqVirtualHost, h =>
+                    {
+                        h.Username(rabbitMqHostUsername);
+                        h.Password(rabbitMqHostPassword);
+                    });
 
-                    cfg.ReceiveEndpoint(host, "user", e =>
+                    cfg.ReceiveEndpoint(host, EventBusConstants.UserQueue, e =>
                     {
                         e.PrefetchCount = 16;
 
                         e.ConfigureConsumer<TestEventHandler>(provider);
+                        e.ConfigureConsumer<ConcertCreatedConsumer>(provider);
+                        e.ConfigureConsumer<TicketsBoughtForConcertConsumer>(provider);
+
+                        var virtualHost = string.IsNullOrEmpty(rabbitMqVirtualHost) ? "" : rabbitMqVirtualHost + "/";
+                        var uriBase = new StringBuilder($"rabbitmq://localhost/{virtualHost}");
+                        EndpointConvention.Map<BuyTicketsForConcertCommand>(
+                            new Uri(uriBase + EventBusConstants.CoreQueue));
                     });
 
                     // or, configure the endpoints by convention
-                    cfg.ConfigureEndpoints(provider);
+                    //cfg.ConfigureEndpoints(provider);
                 }));
             });
 
             services.AddHostedService<BusService>();
 
+            // Add Mapper Configuration
+            var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new ConcertProfile()); });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
+            // Add Framework Services
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {

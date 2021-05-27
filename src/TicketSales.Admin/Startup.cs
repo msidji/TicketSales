@@ -50,6 +50,7 @@ namespace TicketSales.Admin
             {
                 x.AddConsumer<TestEventHandler>();
                 x.AddConsumer<ConcertCreatedConsumer>();
+                x.AddConsumer<TicketsBoughtForConcertConsumer>();
 
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
@@ -65,6 +66,7 @@ namespace TicketSales.Admin
 
                         e.ConfigureConsumer<TestEventHandler>(provider);
                         e.ConfigureConsumer<ConcertCreatedConsumer>(provider);
+                        e.ConfigureConsumer<TicketsBoughtForConcertConsumer>(provider);
 
                         var virtualHost = string.IsNullOrEmpty(rabbitMqVirtualHost) ? "" : rabbitMqVirtualHost + "/";
                         var uriBase = new StringBuilder($"rabbitmq://localhost/{virtualHost}");

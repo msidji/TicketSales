@@ -1,0 +1,25 @@
+﻿@model TicketSales.User.Models.NewTicketViewModel
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Concert" asp-action="BuyTickets" method="post">
+            <input asp-for="ConcertId" type="hidden" value="@Model.Concert.Id"/>
+            <input asp-for="Concert" type="hidden" value="@Model.Concert"/>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" class="form-control" type="text"/>
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TicketsToBuy" class="control-label"></label>
+                <input asp-for="TicketsToBuy" class="form-control" type="number" min="1"/>
+                <span asp-validation-for="TicketsToBuy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Buy" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>

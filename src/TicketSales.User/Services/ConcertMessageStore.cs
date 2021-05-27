@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using TicketSales.Admin.Models;
+using TicketSales.User.Models;
 
-namespace TicketSales.Admin.Services
+namespace TicketSales.User.Services
 {
     public class ConcertMessageStore
     {
@@ -23,12 +23,23 @@ namespace TicketSales.Admin.Services
             return concert ?? new ConcertViewModel();
         }
 
+        public NewTicketViewModel GetNewTicketForConcert(long concertId)
+        {
+            var concert = GetConcertById(concertId);
+            var newTicket = new NewTicketViewModel()
+            {
+                Concert = concert ?? new ConcertViewModel(),
+            };
+
+            return newTicket;
+        }
+
         public void SellTickets(long concertId, int numOfTicketsToSell)
         {
             var concert = GetConcertById(concertId);
             if (concert != null)
             {
-                concert.TicketsSold += numOfTicketsToSell;
+                concert.TicketsAvailable -= numOfTicketsToSell;
             }
         }
     }

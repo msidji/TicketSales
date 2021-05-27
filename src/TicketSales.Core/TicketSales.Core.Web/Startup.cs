@@ -39,6 +39,7 @@ namespace TicketSales.Core.Web
             {
                 x.AddConsumer<TestCommandHandler>();
                 x.AddConsumer<CreateConcertConsumer>();
+                x.AddConsumer<BuyTicketsForConcertConsumer>();
 
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
@@ -54,6 +55,7 @@ namespace TicketSales.Core.Web
 
                         e.ConfigureConsumer<TestCommandHandler>(provider);
                         e.ConfigureConsumer<CreateConcertConsumer>(provider);
+                        e.ConfigureConsumer<BuyTicketsForConcertConsumer>(provider);
                     });
 
                     // or, configure the endpoints by convention
