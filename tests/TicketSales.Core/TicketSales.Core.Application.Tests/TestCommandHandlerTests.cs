@@ -2,11 +2,12 @@ using MassTransit;
 using Moq;
 using System;
 using System.Threading;
+using TicketSales.Core.Application.Consumers;
 using TicketSales.Messages.Commands;
 using TicketSales.Messages.Events;
 using Xunit;
 
-namespace TicketSales.Core.Application
+namespace TicketSales.Core.Application.Tests
 {
     public class TestCommandHandlerTests
     {

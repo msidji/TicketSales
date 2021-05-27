@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using TicketSales.Messages.Commands;
 using TicketSales.Messages.Events;
 
-namespace TicketSales.Core.Application
+namespace TicketSales.Core.Application.Consumers
 {
     public class TestCommandHandler : IConsumer<TestCommand>
     {
