@@ -49,7 +49,11 @@ namespace TicketSales.User.Controllers
             }
 
             var cmd = new BuyTicketsForConcertCommand()
-                {ConcertId = model.ConcertId, TicketsToBuy = model.TicketsToBuy};
+            {
+                ConcertId = model.ConcertId,
+                Username = model.Username,
+                TicketsToBuy = model.TicketsToBuy
+            };
             _bus.Send(_mapper.Map<BuyTicketsForConcertCommand>(cmd));
 
             try

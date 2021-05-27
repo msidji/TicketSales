@@ -32,7 +32,11 @@ namespace TicketSales.Core.Application.Consumers
             if (result)
             {
                 await context.Publish(new TicketsBoughtForConcertEvent()
-                    {TicketsToBuy = context.Message.TicketsToBuy, ConcertId = context.Message.ConcertId});
+                {
+                    TicketsToBuy = context.Message.TicketsToBuy,
+                    Username = context.Message.Username,
+                    ConcertId = context.Message.ConcertId
+                });
                 _logger.LogInformation("TicketsBoughtForConcertEvent published successfully.");
             }
         }

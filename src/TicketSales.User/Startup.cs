@@ -44,6 +44,7 @@ namespace TicketSales.User
             // Add Data Stores
             services.AddSingleton<TestMessageStore>();
             services.AddSingleton<ConcertMessageStore>();
+            services.AddSingleton<TicketMessageStore>();
 
             // Add MessageBroker Services
             services.AddMassTransit(x =>
