@@ -29,7 +29,8 @@ namespace TicketSales.Core.Application.Consumers
             _logger.LogInformation("CreateConcertCommand consumed successfully. Created Concert Id : {newConcertId}",
                 result?.Id);
 
-            await context.Publish(new ConcertCreatedEvent() {Concert = result});
+            await context.Publish(_mapper.Map<ConcertCreatedEvent>(result));
+
             _logger.LogInformation("ConcertCreatedEvent published successfully.");
         }
     }

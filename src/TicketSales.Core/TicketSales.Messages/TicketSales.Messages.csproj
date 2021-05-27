@@ -4,8 +4,4 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\TicketSales.Core.Domain\TicketSales.Core.Domain.csproj" />
-  </ItemGroup>
-
 </Project>

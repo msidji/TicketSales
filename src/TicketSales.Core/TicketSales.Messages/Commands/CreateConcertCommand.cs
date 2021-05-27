@@ -1,9 +1,11 @@
-﻿using TicketSales.Core.Domain.Entities;
+﻿using System;
 
 namespace TicketSales.Messages.Commands
 {
     public class CreateConcertCommand
     {
-        public Concert Concert { get; set; }
+        public string Name { get; set; }
+        public long TicketsInSale { get; set; }
+        public DateTime? EventDate { get; set; }
     }
 }

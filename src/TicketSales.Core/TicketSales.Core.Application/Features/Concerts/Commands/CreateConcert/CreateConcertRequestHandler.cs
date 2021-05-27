@@ -30,12 +30,7 @@ namespace TicketSales.Core.Application.Features.Concerts.Commands.CreateConcert
                 throw new ArgumentNullException(nameof(request.Command), "Command is null.");
             }
 
-            if (request.Command.Concert == null)
-            {
-                throw new ArgumentNullException(nameof(request.Command.Concert), "Concert is null.");
-            }
-
-            var concertEntity = _mapper.Map<Concert>(request.Command.Concert);
+            var concertEntity = _mapper.Map<Concert>(request.Command);
             var newConcert = await _concertRepository.AddAsync(concertEntity);
 
             _logger.LogInformation($"Concert with id {newConcert.Id} is successfully created.");
